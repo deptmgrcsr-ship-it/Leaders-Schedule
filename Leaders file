@@ -1,1 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Schedule Board</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+    body {
+      font-family: Roboto, sans-serif;
+      margin: 0;
+      background: #0A1A3B; /* navy */
+      color: white;
+    }
+    h1 {
+      text-align: center;
+      padding: 15px;
+      background: #FF3FA4; /* bright pink */
+      margin: 0;
+    }
+    #board {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      overflow-x: auto;
+    }
+    .column {
+      background: #FFD21F; /* yellow */
+      color: #0A1A3B;
+      padding: 15px;
+      width: 250px;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+    .card {
+      background: white;
+      color: #0A1A3B;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+      cursor: grab;
+    }
+    button {
+      width: 100%;
+      margin-top: 10px;
+      background: #FF3FA4;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Team Schedule Board</h1>
+
+<div id="board">
+  <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h3>Monday</h3>
+    <button onclick="addCard('Monday')">+ Add Schedule</button>
+  </div>
+
+  <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h3>Tuesday</h3>
+    <button onclick="addCard('Tuesday')">+ Add Schedule</button>
+  </div>
+
+  <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h3>Wednesday</h3>
+    <button onclick="addCard('Wednesday')">+ Add Schedule</button>
+  </div>
+
+  <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h3>Thursday</h3>
+    <button onclick="addCard('Thursday')">+ Add Schedule</button>
+  </div>
+
+  <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h3>Friday</h3>
+    <button onclick="addCard('Friday')">+ Add Schedule</button>
+  </div>
+</div>
+
+<script>
+  function addCard(day) {
+    const schedule = prompt("Enter your schedule:");
+    if (!schedule) return;
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = schedule;
+    card.draggable = true;
+    card.ondragstart = drag;
+
+    const columns = document.querySelectorAll(".column");
+    columns.forEach(col => {
+      if (col.querySelector("h3").innerText === day) {
+        col.appendChild(card);
+      }
+    });
+  }
+
+  function allowDrop(ev) {
+    ev.preventDefault();
+  }
+
+  function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.outerHTML);
+    ev.target.remove();
+  }
+
+  function drop(ev) {
+    ev.preventDefault();
+    ev.currentTarget.insertAdjacentHTML("beforeend", ev.dataTransfer.getData("text"));
+  }
+</script>
+
+</body>
+</html>
 
