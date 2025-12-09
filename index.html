@@ -90,14 +90,14 @@
 </div>
 
 <script>
-    const memberData = {
-        "Alice": "",
-        "Brandon": "",
-        "Chris": "",
-        "Diana": "",
-        "Erik": "",
-        "Faith": ""
-    };
+    let memberData = JSON.parse(localStorage.getItem("scheduleData")) || {
+    "Alice": "",
+    "Brandon": "",
+    "Chris": "",
+    "Diana": "",
+    "Erik": "",
+    "Faith": ""
+};
 
     function renderMembers() {
         const container = document.getElementById("members");
@@ -114,18 +114,23 @@
     }
 
     function addSchedule() {
-        const member = document.getElementById("memberSelect").value;
-        const schedule = document.getElementById("scheduleInput").value;
+    const member = document.getElementById("memberSelect").value;
+    const schedule = document.getElementById("scheduleInput").value;
 
-        if (schedule.trim() === "") {
-            alert("Please enter a schedule.");
-            return;
-        }
-
-        memberData[member] = schedule;
-        renderMembers();
-        document.getElementById("scheduleInput").value = "";
+    if (schedule.trim() === "") {
+        alert("Please enter a schedule.");
+        return;
     }
+
+    memberData[member] = schedule;
+
+    // Save to browser
+    localStorage.setItem("scheduleData", JSON.stringify(memberData));
+
+    renderMembers();
+    document.getElementById("scheduleInput").value = "";
+}
+
 
     renderMembers();
 </script>
