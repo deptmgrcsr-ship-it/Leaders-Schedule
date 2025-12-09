@@ -1,123 +1,134 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Schedule Board</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Team Schedule Board</title>
 
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
-
+<style>
     body {
-      font-family: Roboto, sans-serif;
-      margin: 0;
-      background: #0A1A3B; /* navy */
-      color: white;
+        font-family: 'Roboto', sans-serif;
+        background: navy;
+        color: white;
+        margin: 0;
+        padding: 20px;
     }
+
     h1 {
-      text-align: center;
-      padding: 15px;
-      background: #FF3FA4; /* bright pink */
-      margin: 0;
+        text-align: center;
+        color: yellow;
     }
-    #board {
-      display: flex;
-      gap: 20px;
-      padding: 20px;
-      overflow-x: auto;
+
+    .container {
+        max-width: 900px;
+        margin: auto;
+        background: #ffffff22;
+        padding: 20px;
+        border-radius: 10px;
     }
-    .column {
-      background: #FFD21F; /* yellow */
-      color: #0A1A3B;
-      padding: 15px;
-      width: 250px;
-      border-radius: 12px;
-      flex-shrink: 0;
+
+    .member-box {
+        background: white;
+        color: black;
+        margin: 10px 0;
+        padding: 15px;
+        border-radius: 10px;
     }
-    .card {
-      background: white;
-      color: #0A1A3B;
-      padding: 10px;
-      border-radius: 10px;
-      margin-top: 10px;
-      cursor: grab;
-    }
+
     button {
-      width: 100%;
-      margin-top: 10px;
-      background: #FF3FA4;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-      font-size: 14px;
+        background: hotpink;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        color: white;
+        font-weight: bold;
     }
-  </style>
+
+    #inputSection {
+        margin-top: 20px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0 15px 0;
+        border-radius: 8px;
+        border: none;
+    }
+</style>
 </head>
 <body>
 
 <h1>Team Schedule Board</h1>
 
-<div id="board">
-  <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <h3>Monday</h3>
-    <button onclick="addCard('Monday')">+ Add Schedule</button>
-  </div>
+<div class="container">
+    <div id="members"></div>
 
-  <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <h3>Tuesday</h3>
-    <button onclick="addCard('Tuesday')">+ Add Schedule</button>
-  </div>
+    <div id="inputSection">
+        <h2>Add a Schedule</h2>
 
-  <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <h3>Wednesday</h3>
-    <button onclick="addCard('Wednesday')">+ Add Schedule</button>
-  </div>
+        <label>Select Member:</label>
+        <select id="memberSelect">
+            <option>Alice</option>
+            <option>Brandon</option>
+            <option>Chris</option>
+            <option>Diana</option>
+            <option>Erik</option>
+            <option>Faith</option>
+        </select>
 
-  <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <h3>Thursday</h3>
-    <button onclick="addCard('Thursday')">+ Add Schedule</button>
-  </div>
+        <label>Schedule (text):</label>
+        <input type="text" id="scheduleInput" placeholder="Ex: 9 AM – 6 PM shift">
 
-  <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <h3>Friday</h3>
-    <button onclick="addCard('Friday')">+ Add Schedule</button>
-  </div>
+        <button onclick="addSchedule()">Save Schedule</button>
+    </div>
 </div>
 
 <script>
-  function addCard(day) {
-    const schedule = prompt("Enter your schedule:");
-    if (!schedule) return;
+    const memberData = {
+        "Alice": "",
+        "Brandon": "",
+        "Chris": "",
+        "Diana": "",
+        "Erik": "",
+        "Faith": ""
+    };
 
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = schedule;
-    card.draggable = true;
-    card.ondragstart = drag;
+    function renderMembers() {
+        const container = document.getElementById("members");
+        container.innerHTML = "";
 
-    const columns = document.querySelectorAll(".column");
-    columns.forEach(col => {
-      if (col.querySelector("h3").innerText === day) {
-        col.appendChild(card);
-      }
-    });
-  }
+        for (const name in memberData) {
+            container.innerHTML += `
+                <div class="member-box">
+                    <h3>${name}</h3>
+                    <p><strong>Schedule:</strong> ${memberData[name] || "No schedule yet"}</p>
+                </div>
+            `;
+        }
+    }
 
-  function allowDrop(ev) {
-    ev.preventDefault();
-  }
+    function addSchedule() {
+        const member = document.getElementById("memberSelect").value;
+        const schedule = document.getElementById("scheduleInput").value;
 
-  function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.outerHTML);
-    ev.target.remove();
-  }
+        if (schedule.trim() === "") {
+            alert("Please enter a schedule.");
+            return;
+        }
 
-  function drop(ev) {
-    ev.preventDefault();
-    ev.currentTarget.insertAdjacentHTML("beforeend", ev.dataTransfer.getData("text"));
-  }
+        memberData[member] = schedule;
+        renderMembers();
+        document.getElementById("scheduleInput").value = "";
+    }
+
+    renderMembers();
 </script>
 
 </body>
 </html>
-
