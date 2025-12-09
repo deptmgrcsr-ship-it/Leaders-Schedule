@@ -206,3 +206,18 @@ renderGrid();
   function fm(d){ return d.toLocaleDateString(undefined,{month:"short",day:"numeric"}); }
   note.textContent = `Week of ${fm(start)} – ${fm(end)}`;
 })();
+
+document.getElementById("downloadScheduleBtn").addEventListener("click", () => {
+  const target = document.querySelector("main.page.wrap");
+
+  html2canvas(target, {
+    scale: 2,           // Higher quality
+    useCORS: true,
+    allowTaint: true
+  }).then(canvas => {
+    const link = document.createElement("a");
+    link.download = "schedule.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+});
