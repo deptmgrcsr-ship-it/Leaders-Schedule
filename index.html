@@ -1,138 +1,317 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Team Schedule Board</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Weekly Schedule — Post-It Style</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 
 <style>
-    body {
-        font-family: 'Roboto', sans-serif;
-        background: navy;
-        color: white;
-        margin: 0;
-        padding: 20px;
-    }
-
-    h1 {
-        text-align: center;
-        color: yellow;
-    }
-
-    .container {
-        max-width: 900px;
-        margin: auto;
-        background: #ffffff22;
-        padding: 20px;
-        border-radius: 10px;
-    }
-
-    .member-box {
-        background: white;
-        color: black;
-        margin: 10px 0;
-        padding: 15px;
-        border-radius: 10px;
-    }
-
-    button {
-        background: hotpink;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 8px;
-        cursor: pointer;
-        color: white;
-        font-weight: bold;
-    }
-
-    #inputSection {
-        margin-top: 20px;
-    }
-
-    label {
-        font-weight: bold;
-    }
-
-    input, select {
-        width: 100%;
-        padding: 10px;
-        margin: 5px 0 15px 0;
-        border-radius: 8px;
-        border: none;
-    }
+  :root{
+    --navy: #001f3f;
+    --pink: #ff2d99;
+    --yellow: #ffeb3b;
+    --card: #fff9d9;
+    --muted: #e8eef8;
+  }
+  html,body{height:100%;margin:0;font-family:"Roboto",sans-serif;background:linear-gradient(180deg,#0a274d 0%, #071a37 100%);color:var(--navy);-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1200px;margin:28px auto;padding:18px;}
+  header{display:flex;align-items:center;justify-content:space-between;color:var(--yellow);margin-bottom:14px}
+  header h1{font-size:20px;margin:0}
+  .board{background:rgba(255,255,255,0.06);padding:14px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);overflow:auto;}
+  table{width:100%;border-collapse:collapse;table-layout:fixed;}
+  thead th{position:sticky;top:0;background:linear-gradient(90deg,var(--navy), #0a2340);color:var(--yellow);padding:12px 8px;font-weight:600;border-bottom:3px solid var(--pink);z-index:3;}
+  tbody th.nameCol{position:sticky;left:0;background:var(--navy);color:var(--yellow);padding:12px 8px;text-align:left;font-weight:700;width:160px;z-index:2;border-right:3px solid rgba(255,255,255,0.06)}
+  td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.03);vertical-align:middle;text-align:center;}
+  /* post-it style cell */
+  .cell{
+    background:var(--card);
+    box-shadow: 0 6px 16px rgba(2,6,23,0.35);
+    border-radius:10px;
+    padding:6px 8px;
+    min-height:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition: transform .12s ease, box-shadow .12s ease;
+    color:var(--navy);
+    font-weight:600;
+  }
+  .cell:hover{transform:translateY(-6px) scale(1.02); box-shadow:0 12px 30px rgba(2,6,23,0.5)}
+  .tag-dayoff{background:#fff6a8;color:var(--navy);padding:6px 10px;border-radius:999px;box-shadow:inset 0 -3px 0 rgba(0,0,0,0.06)}
+  .tag-leave{background:#ffd6d6;color:var(--navy);padding:6px 10px;border-radius:999px}
+  .tag-trainee{background:#ffe0c2;color:var(--navy);padding:6px 10px;border-radius:999px}
+  .tag-root{background:#cfe7ff;color:var(--navy);padding:6px 10px;border-radius:999px}
+  .tag-time{background:linear-gradient(90deg,#e9f5ff,#fff);padding:6px 10px;border-radius:999px}
+  /* left name label */
+  .nameLabel{display:flex;align-items:center;gap:8px;padding:6px 8px}
+  .namePill{background:var(--pink);color:white;padding:6px 10px;border-radius:999px;font-weight:700;box-shadow:0 6px 14px rgba(255,45,153,0.14)}
+  /* modal */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.52);display:flex;align-items:center;justify-content:center;z-index:9999}
+  .modal{width:420px;background:white;border-radius:12px;padding:18px;box-shadow:0 20px 60px rgba(2,6,23,0.6);color:var(--navy)}
+  .modal h3{margin:0 0 8px 0;color:var(--navy)}
+  .row{display:flex;gap:8px;margin-bottom:8px}
+  .row label{font-size:13px;color:#233652;font-weight:600}
+  select,input{flex:1;padding:8px;border-radius:8px;border:1px solid #e7eef9;font-size:14px}
+  .actions{display:flex;gap:8px;margin-top:12px;align-items:center}
+  .btn{padding:9px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+  .btn-save{background:var(--pink);color:white}
+  .btn-cancel{background:#f1f5f9;color:var(--navy)}
+  .statusBtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .sbtn{padding:8px 10px;border-radius:8px;border:none;font-weight:700;cursor:pointer}
+  .sbtn.off{background:var(--yellow)} .sbtn.leave{background:#ff8b8b} .sbtn.trainee{background:#ffb580} .sbtn.root{background:#9fd4ff}
+  /* small helper */
+  .small{font-size:12px;color:#38506b}
+  @media(max-width:920px){
+    .wrap{padding:10px}
+    thead th{font-size:13px}
+    .namePill{font-size:13px;padding:6px 8px}
+  }
 </style>
 </head>
 <body>
 
-<h1>Team Schedule Board</h1>
+<div class="wrap">
+  <header>
+    <h1>DAILY SCHEDULE — Week</h1>
+    <div class="small">Post-it style — click a cell to set time or status</div>
+  </header>
 
-<div class="container">
-    <div id="members"></div>
+  <div class="board">
+    <table id="grid">
+      <thead>
+        <tr>
+          <th style="width:160px">AGENT</th>
+          <th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th><th>SUN</th>
+        </tr>
+      </thead>
+      <tbody id="bodyRows">
+        <!-- rows generated by JS -->
+      </tbody>
+    </table>
+  </div>
+</div>
 
-    <div id="inputSection">
-        <h2>Add a Schedule</h2>
+<!-- Modal -->
+<div id="modalWrap" style="display:none" class="modal-backdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h3 id="modalTitle">Edit Schedule</h3>
 
-        <label>Select Member:</label>
-        <select id="memberSelect">
-            <option>Alice</option>
-            <option>Brandon</option>
-            <option>Chris</option>
-            <option>Diana</option>
-            <option>Erik</option>
-            <option>Faith</option>
-        </select>
+    <div style="margin-bottom:8px" class="small" id="modalSubtitle">Agent • Day</div>
 
-        <label>Schedule (text):</label>
-        <input type="text" id="scheduleInput" placeholder="Ex: 9 AM – 6 PM shift">
-
-        <button onclick="addSchedule()">Save Schedule</button>
+    <div class="row">
+      <div style="flex:1">
+        <label>Start time</label>
+        <select id="startSel"></select>
+      </div>
+      <div style="flex:1">
+        <label>End time</label>
+        <select id="endSel"></select>
+      </div>
     </div>
+
+    <div style="margin-top:6px" class="small">Or choose a status</div>
+    <div class="statusBtns">
+      <button class="sbtn off" data-status="DAY OFF">DAY OFF</button>
+      <button class="sbtn leave" data-status="LEAVE">LEAVE</button>
+      <button class="sbtn trainee" data-status="TRAINEE">TRAINEE</button>
+      <button class="sbtn root" data-status="ROOT">ROOT</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-save" id="saveBtn">Save</button>
+      <button class="btn btn-cancel" id="cancelBtn">Cancel</button>
+      <div style="flex:1"></div>
+      <button class="btn" id="clearBtn" style="background:#f8fafc;color:var(--navy)">Clear</button>
+    </div>
+  </div>
 </div>
 
 <script>
-    let memberData = JSON.parse(localStorage.getItem("scheduleData")) || {
-    "Alice": "",
-    "Brandon": "",
-    "Chris": "",
-    "Diana": "",
-    "Erik": "",
-    "Faith": ""
-};
+/* ---------- SETTINGS ---------- */
+const AGENTS = ["Dyrine","Janrey","Jang","Marimar","Ria","Ralph"];
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const STORAGE_KEY = "smk_weekly_schedule_v1";
 
-    function renderMembers() {
-        const container = document.getElementById("members");
-        container.innerHTML = "";
-
-        for (const name in memberData) {
-            container.innerHTML += `
-                <div class="member-box">
-                    <h3>${name}</h3>
-                    <p><strong>Schedule:</strong> ${memberData[name] || "No schedule yet"}</p>
-                </div>
-            `;
-        }
+/* ---------- UTILS: generate time options (30-min) ---------- */
+function times30(){
+  const out=[];
+  for(let h=0; h<24; h++){
+    for(let m=0; m<60; m+=30){
+      const d = new Date(); d.setHours(h); d.setMinutes(m);
+      let hr = d.getHours()%12 || 12;
+      let am = d.getHours() < 12 ? "AM":"PM";
+      let mm = m === 0 ? "" : ":" + String(m).padStart(2,"0");
+      out.push({value: `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`, label:`${hr}${mm} ${am}`});
     }
+  }
+  return out;
+}
+const TIME_OPTS = times30();
 
-    function addSchedule() {
-    const member = document.getElementById("memberSelect").value;
-    const schedule = document.getElementById("scheduleInput").value;
+/* ---------- Data model: agent -> dayIndex -> entry {type,start,end} ---------- */
+let data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") || buildEmpty();
 
-    if (schedule.trim() === "") {
-        alert("Please enter a schedule.");
-        return;
-    }
-
-    memberData[member] = schedule;
-
-    // Save to browser
-    localStorage.setItem("scheduleData", JSON.stringify(memberData));
-
-    renderMembers();
-    document.getElementById("scheduleInput").value = "";
+function buildEmpty(){
+  const o = {};
+  AGENTS.forEach(a=>{
+    o[a]={};
+    DAYS.forEach((d,idx)=> o[a][idx] = {type:null, start:null, end:null});
+  });
+  return o;
 }
 
+/* ---------- Render grid ---------- */
+function renderGrid(){
+  const tbody = document.getElementById("bodyRows");
+  tbody.innerHTML = "";
+  AGENTS.forEach((agent)=>{
+    const tr = document.createElement("tr");
 
-    renderMembers();
+    // name col
+    const th = document.createElement("th");
+    th.className = "nameCol";
+    th.innerHTML = `<div class="nameLabel"><div class="namePill">${agent}</div></div>`;
+    tr.appendChild(th);
+
+    // day cells
+    DAYS.forEach((day,dayIdx)=>{
+      const td = document.createElement("td");
+      td.style.minWidth = "120px";
+      const entry = data[agent][dayIdx];
+      const div = document.createElement("div");
+      div.className = "cell";
+      div.tabIndex = 0;
+      div.setAttribute("role","button");
+      div.setAttribute("data-agent", agent);
+      div.setAttribute("data-day", dayIdx);
+
+      if(entry.type === "DAY OFF"){
+        div.innerHTML = `<div class="tag-dayoff">DAY OFF</div>`;
+      } else if(entry.type === "LEAVE"){
+        div.innerHTML = `<div class="tag-leave">LEAVE</div>`;
+      } else if(entry.type === "TRAINEE"){
+        div.innerHTML = `<div class="tag-trainee">TRAINEE</div>`;
+      } else if(entry.type === "ROOT"){
+        div.innerHTML = `<div class="tag-root">ROOT</div>`;
+      } else if(entry.start && entry.end){
+        const startLabel = labelFromValue(entry.start);
+        const endLabel = labelFromValue(entry.end);
+        div.innerHTML = `<div class="tag-time">${startLabel} – ${endLabel}</div>`;
+      } else {
+        div.innerHTML = `<div style="opacity:0.6">—</div>`;
+      }
+
+      // open modal on click
+      div.addEventListener("click", ()=> openModal(agent, dayIdx));
+      td.appendChild(div);
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+}
+
+/* ---------- label helper ---------- */
+function labelFromValue(val){
+  const it = TIME_OPTS.find(t=>t.value===val);
+  return it ? it.label : val;
+}
+
+/* ---------- Modal logic ---------- */
+const modalWrap = document.getElementById("modalWrap");
+const modalSubtitle = document.getElementById("modalSubtitle");
+const startSel = document.getElementById("startSel");
+const endSel = document.getElementById("endSel");
+const saveBtn = document.getElementById("saveBtn");
+const cancelBtn = document.getElementById("cancelBtn");
+const clearBtn = document.getElementById("clearBtn");
+let currentAgent = null;
+let currentDay = null;
+
+// populate time selects
+function populateTimeSelects(){
+  startSel.innerHTML = "";
+  endSel.innerHTML = "";
+  TIME_OPTS.forEach(opt=>{
+    const o1 = document.createElement("option"); o1.value = opt.value; o1.text = opt.label;
+    const o2 = document.createElement("option"); o2.value = opt.value; o2.text = opt.label;
+    startSel.appendChild(o1); endSel.appendChild(o2);
+  });
+}
+populateTimeSelects();
+
+function openModal(agent, dayIdx){
+  currentAgent = agent; currentDay = dayIdx;
+  modalSubtitle.textContent = `${agent} • ${DAYS[dayIdx]}`;
+  // prefill
+  const e = data[agent][dayIdx];
+  if(e.start) startSel.value = e.start; else startSel.selectedIndex = 0;
+  if(e.end) endSel.value = e.end; else endSel.selectedIndex = 0;
+  // clear status buttons highlight
+  document.querySelectorAll(".sbtn").forEach(b => b.classList.remove("active"));
+  // show modal
+  modalWrap.style.display = "flex";
+  modalWrap.setAttribute("aria-hidden","false");
+  // ensure focusable
+  startSel.focus();
+}
+
+// status button clicks
+document.querySelectorAll(".sbtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const status = btn.getAttribute("data-status");
+    // set data and close
+    data[currentAgent][currentDay] = { type: status, start:null, end:null };
+    saveAndClose();
+  });
+});
+
+saveBtn.addEventListener("click", ()=>{
+  const s = startSel.value;
+  const e = endSel.value;
+  if(!s || !e){
+    alert("Please choose start and end time (or pick a status).");
+    return;
+  }
+  // ensure start < end; if end <= start, assume next day not allowed but require proper order
+  if(s >= e){
+    alert("End time must be after start time. Please pick correct times.");
+    return;
+  }
+  data[currentAgent][currentDay] = { type: null, start: s, end: e };
+  saveAndClose();
+});
+
+cancelBtn.addEventListener("click", ()=>{
+  modalWrap.style.display = "none";
+  modalWrap.setAttribute("aria-hidden","true");
+  currentAgent = null; currentDay = null;
+});
+
+clearBtn.addEventListener("click", ()=>{
+  if(!confirm("Clear this cell?")) return;
+  data[currentAgent][currentDay] = {type:null, start:null, end:null};
+  saveAndClose();
+});
+
+function saveAndClose(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  modalWrap.style.display = "none";
+  modalWrap.setAttribute("aria-hidden","true");
+  currentAgent = null; currentDay = null;
+  renderGrid();
+}
+
+/* close modal clicking backdrop */
+modalWrap.addEventListener("click", (e)=>{
+  if(e.target === modalWrap) { cancelBtn.click(); }
+});
+
+/* ---------- initialize ---------- */
+renderGrid();
 </script>
 
 </body>
