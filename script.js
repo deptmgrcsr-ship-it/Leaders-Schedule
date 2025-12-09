@@ -1,5 +1,5 @@
 /* ===== CONFIG - set your Apps Script URL here ===== */
-const API_URL = "https://script.google.com/macros/s/AKfycbwyJ7K43EjyQjS5KUe0My2EEpuQcVdnU-CYXQ97AA8TRQEx5UaIfFYpU1JOdejljWSlVg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwHucSKxmPV1G5J3H00Dls3OP0AfczXHi5myu6XSniGLURUD7gqrtiZqdlAW2q9LPZXTg/exec";
 
 /* ===== UI / data config ===== */
 const AGENTS = ["Dyrine","Janrey","Jang","Marimar","Ria","Ralph","Paul"];
