@@ -3,10 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Weekly Schedule — Leaders</title>
+<title>Weekly Schedule — Shared</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+
+<!-- fontawesome for icon -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 </head>
@@ -14,26 +16,24 @@
 
 <header class="topbar">
   <div class="topbar-inner">
-    <div class="brand">
-      <div class="brand-left">
-        <div class="logo-square">IX</div>
-        <div class="brand-title">
-          <div class="title-main">DAILY SCHEDULE</div>
-          <div class="title-sub">Week view — click a cell to edit</div>
-        </div>
+    <div class="brand-left">
+      <div class="logo-square">SM</div>
+      <div class="brand-title">
+        <div class="title-main">DAILY SCHEDULE</div>
+        <div class="title-sub">Week view — click your cell to edit</div>
       </div>
-      <div class="week-note" id="weekNote">Week</div>
     </div>
+    <div id="weekNote" class="week-note">Week</div>
   </div>
 </header>
 
-<button id="downloadScheduleBtn" class="download-btn">
-  <i class="fa-solid fa-download"></i> Download
+<!-- Download button (floating top-right) -->
+<button id="downloadBtn" class="download-btn" title="Download schedule as PNG">
+  <i class="fa-solid fa-download"></i>
 </button>
 
-
-<main class="page wrap">
-  <section class="board card">
+<main class="page wrap" id="mainWrap">
+  <section class="board card" id="boardContainer">
     <div class="table-wrap">
       <table id="grid" aria-label="Weekly schedule table">
         <thead>
@@ -56,12 +56,26 @@
       <div class="legend-item"><span class="legend-pill tag-trainee"></span> TRAINEE</div>
       <div class="legend-item"><span class="legend-pill tag-root"></span> ROOT</div>
     </div>
-    <div class="legend-right small">Saved in browser (local). Ask me to wire Google Sheets or Firebase for shared sync.</div>
+    <div class="legend-right small">Shared schedule: changes are saved to the team Google Sheet.</div>
   </section>
 </main>
 
-<!-- Modal -->
-<div id="modalWrap" class="modal-backdrop" aria-hidden="true" style="display:none">
+<!-- Name selection modal (shown on first load) -->
+<div id="nameModal" class="modal-backdrop" style="display:none">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+    <h3 id="nameTitle">Who are you?</h3>
+    <div class="small muted">Choose your name so you can edit only your row.</div>
+    <div style="margin-top:12px">
+      <select id="nameSelect" style="width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6;font-size:16px"></select>
+    </div>
+    <div class="actions" style="margin-top:12px">
+      <button class="btn btn-save" id="confirmNameBtn">Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit modal -->
+<div id="modalWrap" class="modal-backdrop" style="display:none">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <h3 id="modalTitle">Edit Schedule</h3>
     <div class="small muted" id="modalSubtitle">Agent • Day</div>
@@ -94,7 +108,21 @@
   </div>
 </div>
 
-<script src="script.js"></script>
+<!-- Confirm save modal -->
+<div id="confirmModal" class="modal-backdrop" style="display:none">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <h3 id="confirmTitle">Confirm Your Schedule</h3>
+    <div class="small muted" id="confirmText">Are you sure you want to save?</div>
+    <div class="actions" style="margin-top:12px">
+      <button class="btn btn-cancel" id="goBackBtn">Go back editing</button>
+      <button class="btn btn-save" id="confirmSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- html2canvas -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script src="script.js"></script>
 </body>
 </html>

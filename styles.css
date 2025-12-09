@@ -1,11 +1,10 @@
 :root{
   --navy:#001f3f;
-  --accent:#ff2d99; /* used minimally */
   --yellow:#ffd43a;
   --paper:#fffef6;
-  --muted:#f1f5f9;
   --cardbg:#ffffff;
   --text:#0b2540;
+  --download:#0b3b66;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;font-family:"Roboto",sans-serif;background:#f7f9fc;color:var(--text);-webkit-font-smoothing:antialiased}
@@ -32,36 +31,46 @@ thead th{position:sticky;top:0;background:#ffffff; color:var(--navy);padding:12p
 tbody th.nameCol{background:#ffffff;padding:12px 8px;text-align:left;font-weight:700;border-right:1px solid #eef2f7;width:180px;vertical-align:middle}
 tbody td{padding:10px;border-bottom:1px solid #f1f5f9;vertical-align:middle;text-align:center}
 
-/* POST-IT style cell */
+/* POST-IT style cell (white paper look) */
 .cell{
   background:var(--paper);
   color:var(--text);
   border-radius:12px;
-  padding:10px 14px;
-  min-height:48px;
+  padding:12px 16px;
+  min-height:56px;
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
   font-weight:700;
-  font-size:14px;
-  box-shadow:0 8px 18px rgba(11,37,64,0.06);
+  font-size:15px;
+  box-shadow:0 12px 30px rgba(11,37,64,0.06);
   transition:transform .12s ease, box-shadow .12s ease;
-  white-space:pre-line; /* allows line breaks */
+  white-space:pre-line;
   text-align:center;
 }
-.cell:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(11,37,64,0.08)}
+.cell:hover{transform:translateY(-8px);box-shadow:0 22px 44px rgba(11,37,64,0.08)}
+
+/* HIGHLIGHT for selected user row */
+.row-highlight .cell{
+  box-shadow:0 20px 44px rgba(11,37,64,0.12);
+  transform:translateY(-6px);
+  background:#fffdf0;
+}
+
+/* Dim other rows visually */
+.dim-row{opacity:0.45;}
 
 /* tag styles */
-.tag-dayoff{background:var(--yellow);padding:8px 10px;border-radius:999px;color:var(--navy);display:inline-block}
-.tag-leave{background:#ffdede;padding:8px 10px;border-radius:999px;color:var(--text)}
-.tag-trainee{background:#fff1e0;padding:8px 10px;border-radius:999px;color:var(--text)}
-.tag-root{background:#e8f7ff;padding:8px 10px;border-radius:999px;color:var(--text)}
-.tag-time{background:linear-gradient(180deg,#ffffff,#f7fcff);padding:8px 10px;border-radius:999px;color:var(--text);display:inline-block}
+.tag-dayoff{background:var(--yellow);padding:10px 12px;border-radius:12px;color:var(--navy);display:inline-block}
+.tag-leave{background:#ffdede;padding:10px 12px;border-radius:12px;color:var(--text)}
+.tag-trainee{background:#fff1e0;padding:10px 12px;border-radius:12px;color:var(--text)}
+.tag-root{background:#e8f7ff;padding:10px 12px;border-radius:12px;color:var(--text)}
+.tag-time{background:linear-gradient(180deg,#ffffff,#f7fcff);padding:10px 12px;border-radius:12px;color:var(--text);display:inline-block}
 
 /* name pill */
 .nameLabel{display:flex;align-items:center;gap:10px}
-.namePill{background:var(--navy);color:var(--yellow);padding:8px 12px;border-radius:999px;font-weight:700;box-shadow:0 8px 18px rgba(2,6,23,0.06)}
+.namePill{background:var(--navy);color:var(--yellow);padding:10px 14px;border-radius:999px;font-weight:700;box-shadow:0 10px 24px rgba(2,6,23,0.06)}
 
 /* modal & controls */
 .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:center;justify-content:center;z-index:9999}
@@ -75,7 +84,7 @@ select,input{flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef6;back
 
 /* buttons */
 .actions{display:flex;gap:8px;margin-top:12px;align-items:center}
-.btn{padding:9px 12px;border-radius:10px;border:1px solid #e6eef6;background:#f7fafc;cursor:pointer;font-weight:700}
+.btn{padding:10px 14px;border-radius:10px;border:1px solid #e6eef6;background:#f7fafc;cursor:pointer;font-weight:700}
 .btn-save{background:var(--navy);color:var(--yellow);border:none}
 .btn-cancel{background:#f1f5f9;color:var(--text)}
 #clearBtn{background:#fffefc;border:1px solid #e9eef6}
@@ -97,6 +106,7 @@ select,input{flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef6;back
 .tag-trainee.legend-pill{background:#ffb580}
 .tag-root.legend-pill{background:#9fd4ff}
 
+/* Floating download button */
 .download-btn{
   position:fixed;
   right:18px;
@@ -110,6 +120,9 @@ select,input{flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef6;back
   box-shadow:0 10px 24px rgba(11,37,64,0.12);
   cursor:pointer;
   font-weight:700;
+  display:flex;
+  gap:8px;
+  align-items:center;
 }
 .download-btn:hover{transform:translateY(-3px);box-shadow:0 18px 36px rgba(11,37,64,0.16)}
 
@@ -118,21 +131,5 @@ select,input{flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef6;back
   .wrap{padding:10px}
   tbody th.nameCol{width:140px}
   .modal{width:92%}
-}
-.download-btn {
-  background: #002b5b;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: 0.2s ease;
-}
-
-.download-btn:hover {
-  background: #004080;
+  .download-btn{right:12px;top:12px;padding:9px 12px}
 }
