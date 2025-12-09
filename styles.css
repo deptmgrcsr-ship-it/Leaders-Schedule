@@ -119,3 +119,20 @@ select,input{flex:1;padding:10px;border-radius:8px;border:1px solid #e6eef6;back
   tbody th.nameCol{width:140px}
   .modal{width:92%}
 }
+.download-btn {
+  background: #002b5b;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s ease;
+}
+
+.download-btn:hover {
+  background: #004080;
+}
